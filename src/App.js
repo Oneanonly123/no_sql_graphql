@@ -1,25 +1,30 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import { useState, useEffect } from "react";
 
-function App() {
+const App = () => {
+  const [hotels, setHotels] = useState(null);
+  const fetchData = async () => {
+    const response = await fetch("/.netlify/functions/getHotels");
+    const responseBody = await response.json();
+
+    setHotels(responseBody.data.hotel_data.values);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  console.log(hotels);
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {hotels?.map((hotel) => (
+        <div className="hotel">
+          <h1>{hotel.name}</h1>
+          <p>{hotel.rating}</p>
+        </div>
+      ))}
     </div>
   );
-}
+};
 
 export default App;
